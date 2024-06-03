@@ -27,7 +27,6 @@ features {}
 
 provider "azurerm" {
   alias = "management"
-features {
-}
+features {}
   subscription_id = "bd73b938-1dbc-4f3a-84ec-51e240f8bd64"
 }
