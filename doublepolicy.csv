@@ -1,0 +1,4 @@
+﻿policyname,displayname,policyid,parameterName,parameterValue
+Tag_Required,Require a tag and its value on resources,/providers/Microsoft.Authorization/policyDefinitions/1e30110a-5ceb-460c-a204-c1c3969c6d62,"tagName,tagValue","Environment,Production"
+Specific_TimeZone,specified time zone,/providers/Microsoft.Authorization/policyDefinitions/c633f6a2-7f8b-4d9e-9456-02f0f04f5505,"IncludeArcMachines,TimeZone","true,(UTC-03:00) Brasilia"
+Specific_Domain,specified domain,/providers/Microsoft.Authorization/policyDefinitions/84662df4-0e37-44a6-9ce1-c9d2150db18c,"IncludeArcMachines,DomainName","true,snp"
