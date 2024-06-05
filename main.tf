@@ -82,7 +82,61 @@ resource "azurerm_virtual_network_peering" "example-3" {
   virtual_network_name      = local.peering["peer2"].vnet_name
   remote_virtual_network_id = azurerm_virtual_network.vnet["rg2"].id
 }
+resource "azurerm_virtual_machine" "vms" {
+  for_each = { for idx, vm in local.vms : idx => vm }
+  provider = azurerm.connectivity
+  name                  = each.value["name"]
+  location              = each.value["location"]
+  resource_group_name   = each.value["resource_group"]
+  vm_size               = each.value["vm_size"]
 
+  storage_image_reference {
+    publisher = each.value["image_publisher"]
+    offer     = each.value["image_offer"]
+    sku       = each.value["image_sku"]
+    version   = "latest"
+  }
+
+  os_profile {
+    computer_name  = each.value["name"]
+    admin_username = each.value["admin_username"]
+    admin_password = each.value["admin_password"]
+  }
+
+  os_profile_windows_config {
+    provision_vm_agent = true
+  }
+
+storage_os_disk {
+    name              = "${each.value.name}-osdisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    disk_size_gb      = each.value.disk_size
+    managed_disk_type = "Premium_LRS"
+  }
+  tags = {
+    environment = "production"
+  }
+
+  network_interface_ids = [
+    azurerm_network_interface.nics[each.key].id
+  ]
+}
+
+# Create network interfaces
+resource "azurerm_network_interface" "nics" {
+  provider = azurerm.connectivity
+  for_each = { for idx, vm in local.vms : idx => vm }
+  name                = "${each.value["name"]}-nic"
+  location            = each.value["location"]
+  resource_group_name = each.value["resource_group"]
+
+  ip_configuration {
+    name                          = "ipconfig1"
+    subnet_id                     = azurerm_subnet.subnet1[each.value["subnet_name"]].id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 
 
 
