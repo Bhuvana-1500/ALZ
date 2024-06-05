@@ -22,6 +22,7 @@ resource "azurerm_resource_group" "rg1" {
 
 # Create the virtual networks and subnets
 resource "azurerm_virtual_network" "vnet" {
+  provider = azurerm.connectivity
   for_each            = local.resource_groups
   name                = each.value.vnet_name  # Access the first virtual network name in the list
   location            = each.value.location
@@ -133,6 +134,7 @@ storage_os_disk {
 
 # Create network interfaces
 resource "azurerm_network_interface" "nics" {
+  provider = azurerm.connectivity
   for_each = { for idx, vm in local.vms : idx => vm }
   name                = "${each.value["name"]}-nic"
   location            = each.value["location"]
