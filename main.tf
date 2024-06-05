@@ -65,6 +65,7 @@ for_each = local.subnets3
 }
 
 resource "azurerm_virtual_network_peering" "example-1" {
+  provider = azurerm.connectivity
   for_each = local.hub_peer
   name                      = local.hub_peer[each.key].name
   resource_group_name       = local.resource_groups.rg2.name
@@ -73,6 +74,7 @@ resource "azurerm_virtual_network_peering" "example-1" {
 }
 
 resource "azurerm_virtual_network_peering" "example-2" {
+  provider = azurerm.connectivity
   for_each = local.spoke_peer
   name                      = local.spoke_peer[each.key].name
   resource_group_name       = local.spoke_peer[each.key].resource_group_name
@@ -90,7 +92,7 @@ resource "azurerm_virtual_network_peering" "example-3" {
 
 resource "azurerm_virtual_machine" "vms" {
   for_each = { for idx, vm in local.vms : idx => vm }
-
+  provider = azurerm.connectivity
   name                  = each.value["name"]
   location              = each.value["location"]
   resource_group_name   = each.value["resource_group"]
