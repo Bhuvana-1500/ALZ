@@ -12,6 +12,10 @@ terraform {
 }
 
 provider "azurerm" {
+features {}
+subscription_id = "13ba43d9-3859-4c70-9f8d-182debaa038b"
+}
+provider "azurerm" {
   alias = "connectivity"
 features {}
   subscription_id = "13ba43d9-3859-4c70-9f8d-182debaa038b"
