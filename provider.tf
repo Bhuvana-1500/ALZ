@@ -11,6 +11,15 @@ terraform {
   }
 }
 
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "CICDpipelines-rg"
+    storage_account_name = "sacicdp"
+    container_name       = "cicdcon"
+    key                  = "terraform.tfstate"
+  }
+}
+
 provider "azurerm" {
 features {}
 subscription_id = "13ba43d9-3859-4c70-9f8d-182debaa038b"
