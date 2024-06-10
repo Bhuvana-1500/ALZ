@@ -4,7 +4,7 @@ locals {
     name                       = "Tenant_Root_Group1"
     display_name               = "Tenant Root Group1"
     parent_management_group_id = null  # Since it's the root group
-    subscription_ids           = ["",""]    # No subscriptions at root level
+    subscription_ids           = ["null","null"]    # No subscriptions at root level
   }
 }
 
