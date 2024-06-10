@@ -5,4 +5,6 @@ resource "azurerm_management_group_policy_assignment" "policyassignment" {
   display_name          = each.value.displayname
   policy_definition_id  = each.value.policyid
   management_group_id   = azurerm_management_group.root.id
+  depends_on = [azurerm_management_group.root]
 }
+
