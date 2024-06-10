@@ -20,6 +20,9 @@ resource "azurerm_virtual_network" "vnet" {
   location            = each.value.location
   resource_group_name = each.value.name
   address_space       = each.value.address_space
+  depends_on = [
+    azurerm_resource_group.rg
+  ]
 }
 
 resource "azurerm_virtual_network" "vnet1" {
@@ -29,6 +32,9 @@ provider = azurerm.management
   location            = each.value.location
   resource_group_name = each.value.name
   address_space       = each.value.address_space
+  depends_on = [
+    azurerm_resource_group.rg1
+  ]
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -38,6 +44,9 @@ for_each = local.subnets1
   resource_group_name  = local.resource_groups.rg2.name
   virtual_network_name = local.resource_groups.rg2.vnet_name
   address_prefixes     = ["${each.value}"]
+  depends_on = [
+    azurerm_virtual_network.vnet
+  ]
 }
 
 resource "azurerm_subnet" "subnet1" {
@@ -47,6 +56,9 @@ for_each = local.subnets2
   resource_group_name  = local.resource_groups.rg3.name
   virtual_network_name = local.resource_groups.rg3.vnet_name
   address_prefixes     = ["${each.value}"]
+  depends_on = [
+    azurerm_virtual_network.vnet
+  ]
 }
 resource "azurerm_subnet" "subnet2" {
   provider = azurerm.management
@@ -55,6 +67,9 @@ for_each = local.subnets3
   resource_group_name  = local.resource_groups1.rg4.name
   virtual_network_name = local.resource_groups1.rg4.vnet_name
   address_prefixes     = ["${each.value}"]
+  depends_on = [
+    azurerm_virtual_network.vnet1
+  ]
 }
 
 resource "azurerm_virtual_network_peering" "example-1" {
@@ -64,6 +79,9 @@ resource "azurerm_virtual_network_peering" "example-1" {
   resource_group_name       = local.resource_groups.rg2.name
   virtual_network_name      = local.resource_groups.rg2.vnet_name
   remote_virtual_network_id = local.hub_peer[each.key].address_space
+  depends_on = [
+    azurerm_virtual_network.vnet
+  ]
 }
 
 resource "azurerm_virtual_network_peering" "example-2" {
@@ -73,6 +91,10 @@ resource "azurerm_virtual_network_peering" "example-2" {
   resource_group_name       = local.spoke_peer[each.key].resource_group_name
   virtual_network_name      = local.spoke_peer[each.key].vnet_name
   remote_virtual_network_id = azurerm_virtual_network.vnet["rg2"].id
+  depends_on = [
+    azurerm_virtual_network.vnet,
+    azurerm_virtual_network_peering.example-1
+  ]
 }
 resource "azurerm_virtual_network_peering" "example-3" {
   provider = azurerm.management
@@ -81,6 +103,10 @@ resource "azurerm_virtual_network_peering" "example-3" {
   resource_group_name       = local.peering["peer2"].resource_group_name
   virtual_network_name      = local.peering["peer2"].vnet_name
   remote_virtual_network_id = azurerm_virtual_network.vnet["rg2"].id
+  depends_on = [
+    azurerm_virtual_network.vnet1,
+    azurerm_virtual_network_peering.example-2
+  ]
 }
 resource "azurerm_virtual_machine" "vms" {
   for_each = { for idx, vm in local.vms : idx => vm }
@@ -121,6 +147,9 @@ storage_os_disk {
   network_interface_ids = [
     azurerm_network_interface.nics[each.key].id
   ]
+  depends_on = [
+    azurerm_network_interface.nics
+  ]
 }
 
 # Create network interfaces
@@ -136,6 +165,9 @@ resource "azurerm_network_interface" "nics" {
     subnet_id                     = azurerm_subnet.subnet1[each.value["subnet_name"]].id
     private_ip_address_allocation = "Dynamic"
   }
+  depends_on = [
+    azurerm_subnet.subnet1
+  ]
 }
 
 
