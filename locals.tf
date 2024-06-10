@@ -1,7 +1,7 @@
 # Define root management group properties
 locals {
   root_management_group = {
-    name                       = "Tenant Root Group"
+    name                       = "Tenant_Root_Group"
     display_name               = "Tenant Root Group"
     parent_management_group_id = null  # Since it's the root group
     subscription_ids           = ["13ba43d9-3859-4c70-9f8d-182debaa038b","bd73b938-1dbc-4f3a-84ec-51e240f8bd64"]    # No subscriptions at root level
