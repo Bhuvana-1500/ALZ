@@ -1,9 +1,3 @@
-resource "azurerm_management_group" "root" {
-  name                       = local.root_management_group.name
-  display_name               = local.root_management_group.display_name
-  parent_management_group_id = local.root_management_group.parent_management_group_id
-  subscription_ids           = local.root_management_group.subscription_ids
-}
 
 resource "azurerm_resource_group" "rg" {
   provider = azurerm.connectivity
